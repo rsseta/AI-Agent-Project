@@ -33,7 +33,7 @@ def make_plan(task):
         return [
             "Bilinmeyen görev, plan oluşturulamıyor"
         ]
-    
+
 def make_task_plan(msg):
 
     msg = msg.lower()

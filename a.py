@@ -13,7 +13,7 @@ class Task:
         self.output = None
         self.tool = None
         self.status = "PENDING"
-
+        
     def retry(self):
         if self.retry_count < 3:
             self.status = "RETRYING"
@@ -180,6 +180,9 @@ class Executor:
 
 class Tools:
 
+    def __init__(self, memory):
+        self.memory = memory
+
     def get_time(self):
         return dt.datetime.now().strftime('%H:%M:%S')
 
@@ -325,8 +328,7 @@ class Tools:
 
 class ToolManager:
     def __init__(self, memory):
-        self.memory = memory
-        self.tools = Tools()
+        self.tools = Tools(memory)
 
         self.tool_dict = {
             name: getattr(self.tools, name)

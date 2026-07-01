@@ -7,7 +7,7 @@ researches = {}
 
 def load_memory():
     global saved_data, variables
-
+    
     try:
         with open("memory.json", "r") as file:
             data = json.load(file)

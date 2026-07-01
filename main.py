@@ -32,7 +32,7 @@ def run_tool(task, msg):
         if data == None:
             return "Son mesajınız yok"
         return "Son mesajınız işlem için uygunsuz"
-    
+
     elif task == "search_memory":
         keyword = msg.replace("ara ", "")
         return tools[task](keyword)

@@ -2,6 +2,7 @@ from memory import history, variables, researches, save_data, get_data, get_memo
 import datetime as dt
 from ddgs import DDGS
 
+
 def get_time():
     return dt.datetime.now().strftime('%H:%M:%S')
 
