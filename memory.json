@@ -1,0 +1,16 @@
+{
+    "saved_data": {
+        "last_result": 4,
+        "name": "eser"
+    },
+    "variables": {},
+    "researches": {
+        "python": {
+            "content": "Python 2.0 was released on 16 October 2000, featuring many new features such as list comprehensions , cycle-detecting garbage collection, reference ...",
+            "source": "ddgs(https://en.wikipedia.org/wiki/Python_(programming_language))",
+            "times_used": 2,
+            "saved_at": "2026-07-01 11:22:46.939678",
+            "query": "python"
+        }
+    }
+}
