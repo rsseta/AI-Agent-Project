@@ -1,89 +1,52 @@
-from intent import detect_intent
-from memory import get_data, variables
+# planner.py
 
-def make_plan(task):
+from task import Task
 
-    if task == "math":
-        return [
-            "ifadeyi al",
-            "hesap yap",
-            "sonucu döndür"
-        ]
-    elif task == "time":
-        return [
-            "saat bilgisini al",
-            "sonucu döndür"
-        ]
-    elif task == "greeting":
-        return [
-            "selamlaşma mesajı oluştur",
-            "sonucu döndür"
-        ]
-    elif task == "save_name":
-        return [
-            "adı kaydet",
-            "sonucu döndür"
-        ]
-    elif task == "get_name":
-        return [
-            "adı al",
-            "sonucu döndür"
-        ]
-    else:
-        return [
-            "Bilinmeyen görev, plan oluşturulamıyor"
-        ]
-
-def make_task_plan(msg):
-
-    msg = msg.lower()
-
-    plan = []
-
-    parts = [part.strip() for part in msg.split(" ve ")]
-    for part in parts:
-        task_input = None
-        task = detect_intent(part)
-
-        if task == "math":
-            task_input = part.replace("hesapla ", "")
-
-        elif task == "save_result":
-            get_data("last_result")
+# --- PLANNER ---
+class Planner:
+    def __init__(self, memory):
+        self.memory = memory
+    def task_input_selector(self, part, reason):
+        if reason == "math":
+            self.task_input = part.replace("hesapla ", "")
         
-        elif task == "variable":
+        elif reason == "variable":
             variable = part.replace("sonucu ", "")
             variable = variable.replace(" olarak kaydet", "")
-            task_input = variable
+            self.task_input = variable
 
-        elif task == "save_name":
-            task_input = part.replace("adım ", "")
+        elif reason == "save_name":
+            self.task_input = part.replace("adım ", "")
 
-        elif task == "adding":
-            task = "math"
+        elif reason == "adding":
             words = part.split()
             numbers = []
             for word in words:
-                if word.isdigit() or word in variables:
+                if word.isdigit() or word in self.memory.variables:
                     numbers.append(word)
-            task_input = " + ".join(numbers)
+            self.task_input = " + ".join(numbers)
 
-        elif task == "research":
-            task_input = part.replace("araştır ", "")
-            
-
-
-        if task_input is not None:
-            plan.append({
-                "task": task,
-                "input": task_input
-            })
-        else:
-            plan.append({
-                "task": task
-            })
-
+        elif reason == "research":
+            self.task_input = part.replace("araştır ", "")
         
-    # print(plan)
+        else:
+            self.task_input = part
+        
+        if self.task_input:
+            return self.task_input
 
-    return plan
+
+    def plan(self, reasons, next_task_id):
+        tasks = []
+
+        for reason in reasons:
+            task_id = next_task_id
+            intent = reason["intent"]
+            part = reason["part"]
+            description = intent
+            task_input = self.task_input_selector(part, intent)
+            task = Task(task_id, description, task_input)
+
+            tasks.append(task)
+
+        return tasks

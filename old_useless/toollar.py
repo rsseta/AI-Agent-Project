@@ -1,22 +1,12 @@
-# tools.py
+class Tools:
 
-from basetool import BaseTool
-import datetime as dt
-from ddgs import DDGS
+    def __init__(self, memory):
+        self.memory = memory
 
-from memory import Memory
-
-
-class GetTime(BaseTool):
-    name = "time"
-
-    def run(self):
+    def get_time(self):
         return dt.datetime.now().strftime('%H:%M:%S')
 
-class Calculate(BaseTool):
-    name = "math"
-
-    def run(self, msg):
+    def calculate(self, msg):
         try:
             try:
                 tokens = msg.split()
@@ -27,46 +17,30 @@ class Calculate(BaseTool):
                     else:
                         resolved += t
                 msg = resolved
-
             except Exception as e:
-                return f"Hesaplama Hatasi: {e}"
-            
+                print(e)
             result = eval(msg)
             self.memory.save_data("last_result", result)
             return f"Sonuç -> {result}"
-        
         except Exception as e:
             return f"Hesaplama Hatası: {e}"
 
-class GetMemoryCount(BaseTool):
-    name = "memory_count"
+    def get_memory_count(self):
+        return len(self.memory.history.get_memory())
 
-    def run(self):
-        
-        return f"Toplam {len(self.memory.history.get_memory())} mesaj var."
-
-class SaveName(BaseTool):
-    name = "save_name"
-
-    def run(self, msg):
+    def save_name(self, msg):
         name = msg.replace("adım ", "")
         self.memory.save_data("name", name)
         return f"Adın {name} olarak kaydedildi!"
-
-class GetName(BaseTool):
-    name = "get_name"
-
-    def run(self):
+        
+    def get_name(self):
         try:
             name = self.memory.get_data("name")
             return f"Adın {name}"
         except Exception as e:
             return e
-    
-class LastMsg(BaseTool):
-    name = "last_message"
-
-    def run(self):
+        
+    def last_msg(self):
         user_messages = [
             msg for msg in self.memory.get_memory()
             if msg["role"] == "user"
@@ -75,15 +49,8 @@ class LastMsg(BaseTool):
             return user_messages[-2]['content']
         else:
             return "Henüz öcenki mesajınız yok"
-    
-class SearchMemory(BaseTool):
-    name = "search_memory"
-
-    def run(self, keyword):
-        if "hesaplama" in keyword:
-                keyword = "hesapla"
-        if "ara" in keyword:
-            keyword = keyword.replace("ara ", "")
+        
+    def search_memory(self, keyword):
         user_messages = [
             msg for msg in self.memory.get_memory()
             if msg["role"] == "user"
@@ -93,21 +60,15 @@ class SearchMemory(BaseTool):
             return f"{keyword} içeren mesaj bulunamadı"
         return f"{keyword} içeren {len(user_messages)} sonuç -> {', '.join([msg['content'] for msg in user_messages])}"
 
-class Repeat(BaseTool):
-    name = "repeat"
-
-    def run(self):
+    def repeat(self):
         last_input = self.memory.get_data("last_input")
         last_tool = self.memory.get_data("last_tool")
-        if LastMsg(self.memory).run() and self.memory.get_data("last_tool"):
+        if self.last_msg() and self.memory.get_data("last_tool"):
             return last_tool, last_input
         else:
             return None
-    
-class SaveResult(BaseTool):
-    name = "save_result"
-
-    def run(self):
+        
+    def save_result(self):
         try:
             last_result = self.memory.get_data("last_result")
             self.memory.save_data("saved_result", last_result)
@@ -115,26 +76,17 @@ class SaveResult(BaseTool):
         except Exception as e:
             return f"Sonuç bulunamadı, kaydedilemedi: {e}"
 
-class show_result(BaseTool):
-    name = "show_result"
-
-    def run(self):
+    def show_result(self):
         result = self.memory.get_data("saved_result")
         if result:
             return f"Kaydedilen sonuç -> {result}"
         else:
             return "Henüz bir sonuç kaydedilmedi"
-    
-class Exit(BaseTool):
-    name = "exit"
-
-    def run(self):
+        
+    def exit(self):
         return quit()
 
-class SaveVariable(BaseTool):
-    name = "variable"
-
-    def run(self, variable):
+    def save_variable(self, variable):
         last = self.memory.get_data("last_result")
         if last == None:
             return "Son sonuç bulunmuyor."
@@ -142,10 +94,7 @@ class SaveVariable(BaseTool):
         self.memory.save_json()
         return f"{variable}, {last} olarak kaydedildi."
 
-class ShowVariables(BaseTool):
-    name = "show_variables"
-
-    def run(self):
+    def show_variables(self):
         if not self.memory.variables:
             return "Değişken yok"
 
@@ -155,10 +104,7 @@ class ShowVariables(BaseTool):
 
         return response
 
-class Ddgs(BaseTool):
-    name = "ddgs"
-
-    def run(self, key):
+    def ddgs(self, key):
         try:
             with DDGS() as ddg:
                 results = list(ddg.text(key, max_results=3))
@@ -166,29 +112,25 @@ class Ddgs(BaseTool):
         except Exception as e:
             return f"ddgs hatası: {e}"
 
-#Search
-class WebSearch(BaseTool):
-    name = "research"
-
-    def run(self, key):
+    #Search
+    def web_search(self, key):
         if key in self.memory.researches:
-            first = results[0]
+            first = self.memory.researches[key]
             result = first.get("body", "No content")[:1000]
             source = first.get("href", "unknown")
             times_used = self.memory.researches[key]["times_used"]
             times_used += 1
-            
             self.memory.save_used(key, times_used)
             return result
         
         date = dt.datetime.now()
 
         try:
-            results = Ddgs(self.memory).run(key)
+            results = self.ddgs(key)
             if not results:
                 return "Sonuç Bulunamadı"
             
-            result = results[0]["body"][:5000]
+            result = results[0]["body"][:1000]
             source = f"ddgs({results[0]['href']})"
         
         except Exception as e:
@@ -201,7 +143,5 @@ class WebSearch(BaseTool):
             "saved_at": str(date),
             "query": key
         }
-
-        self.memory.save_json()
 
         return result

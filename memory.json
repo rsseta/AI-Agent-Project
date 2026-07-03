@@ -1,16 +1,27 @@
 {
     "saved_data": {
-        "last_result": 4,
+        "last_result": 545,
         "name": "eser"
     },
-    "variables": {},
+    "variables": {
+        "x": 111,
+        "y": 656,
+        "z": 545
+    },
     "researches": {
         "python": {
-            "content": "Python 2.0 was released on 16 October 2000, featuring many new features such as list comprehensions , cycle-detecting garbage collection, reference ...",
+            "content": "Python is a high-level, general-purpose programming language that emphasizes code readability, simplicity, and ease-of-writing with the use of significant ...",
             "source": "ddgs(https://en.wikipedia.org/wiki/Python_(programming_language))",
-            "times_used": 2,
-            "saved_at": "2026-07-01 11:22:46.939678",
+            "times_used": 1,
+            "saved_at": "2026-07-02 14:12:54.453825",
             "query": "python"
+        },
+        "insan": {
+            "content": "Insan (transl. Human) is a 2005 Indian Hindi-language action thriller film directed by K. Subash. It features an ensemble cast of Akshay Kumar, Ajay Devgn, Tusshar, Esha, Lara Dutta, Laila, Koena Mitra, and Rahul Dev.It is a remake of Telugu film Khadgam (2002), directed by Krishna Vamsi.Insan released on 14 January 2005 to mixed reviews from critics, with most of them praising Kumar's performance, but was commercially unsuccessful, grossing only \u20b9104.1 million worldwide against a budget of \u20b9125 million.",
+            "source": "ddgs(https://en.wikipedia.org/wiki/Insan)",
+            "times_used": 1,
+            "saved_at": "2026-07-02 14:13:37.309675",
+            "query": "insan"
         }
     }
 }

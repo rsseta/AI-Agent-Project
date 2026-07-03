@@ -1,5 +1,5 @@
-from memory import load_memory, save, save_data
-from planner import make_task_plan
+from old_useless.memory import load_memory, save, save_data
+from old_useless.planner import make_task_plan
 from tools import get_time, calculate, get_memory_count, save_name, get_name, last_msg, search_memory, repeat, save_result, show_result, exit, save_variable, show_variables, web_search
 import datetime as dt
 tools = {
